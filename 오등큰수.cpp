@@ -1,6 +1,7 @@
 /*
 백준 17299번 문제
-오등큰수
+오등큰수 골드3 문제
+1회 시도 후 성공
 
 문제
 크기가 N인 수열 A = A1, A2, ..., AN이 있다.수열의 각 원소 Ai에 대해서 오등큰수 NGF(i)를 구하려고 한다.
@@ -31,8 +32,11 @@ using namespace std;
 stack<int> bucket, compareBucket, ans;
 //각 원소가 몇번 등장했는지 저장하는 테이블
 int table[1000001];
+
 void compare(int n)
 {
+	//비교할 버킷이 비어있다면 -1을 정답에 push
+	//비교용 버킷에 데이터버킷의 top을 push
 	if (compareBucket.empty())
 	{
 		ans.push(-1);
@@ -41,6 +45,7 @@ void compare(int n)
 		return;
 	}
 
+	//비교 버킷에서 원하는 숫자가 top에 있다면
 	if (table[n] < table[compareBucket.top()])
 	{
 		ans.push(compareBucket.top());
@@ -49,6 +54,7 @@ void compare(int n)
 		return;
 	}
 
+	//비교 버킷에서 원하지 않는 숫자가 top에 있다면
 	if (table[n] >= table[compareBucket.top()])
 	{
 		compareBucket.pop();
@@ -69,10 +75,14 @@ int main()
 		bucket.push(input);
 		table[input]++;
 	}
+
+	//버킷이 빌때까지 비교를 실행한다
 	while (!bucket.empty())
 	{
 		compare(bucket.top());
 	}
+
+	//정답 출력
 	while (!ans.empty())
 	{
 		cout << ans.top() << " ";
