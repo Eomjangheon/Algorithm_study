@@ -6,45 +6,32 @@
 #include <map>
 
 using namespace std;
-array< int, 26> table;
+
+
+
 int main()
 {
 	ios::sync_with_stdio(false);
 	cin.tie(nullptr);
 	cout.tie(nullptr);
 
-	string str;
-	cin >> str;
+	vector<int> arr1;
+	int n, k;
+	cin >> n >> k;
 
-	for (char c : str) {
-		table[c - 'A']++;
+	for (int i = 0; i < n; ++i) {
+		int temp;
+		cin >> temp;
+		arr1.push_back(temp);
 	}
 
-	int odd = 0;
-	int oddPos = -1;
-	for (int i = 0; i < 26; ++i) {
-		if (table[i] % 2) {
-			odd++;
-			oddPos = i;
+	int sum = 0;
+	for (int i = 0; i < n; ++i) {
+		for (int j = i + 1; j < n; ++j) {
+			if (arr1[i] + arr1[j] == k)
+				sum++;
 		}
 	}
-
-	if (odd > 1) {
-		cout << "I'm Sorry Hansoo";
-		return 0;
-	}
-
-	for (int i = 0; i < 26; ++i) {
-		for (int j = 0; j < table[i] / 2; ++j)
-			cout << (char)(i + 'A');
-	}
-	if (odd == 1) {
-		cout<< (char)(oddPos + 'A');
-	}
-	for (int i = 25; i >= 0; --i) {
-		for (int j = 0; j < table[i] / 2; ++j)
-			cout << (char)(i + 'A');
-	}
-
+	cout << sum;
 	
 }
