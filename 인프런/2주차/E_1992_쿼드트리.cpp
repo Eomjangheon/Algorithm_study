@@ -1,85 +1,74 @@
 #include <iostream>
 #include <vector>
-#include <algorithm>
-#include <numeric>
+#include <queue>
+
 using namespace std;
 
-int m, n, k;
-int table[104][104];
-bool visited[104][104];
-int tempAns = 0;
-int ans = 0;
+int m[64][64];
+bool visited[100][100];
 
-int dy[4] = { -1,1,0,0 };
-int dx[4] = { 0,0,-1,1 };
+const int dy[] = {-1,0,1,0};
+const int dx[] = { 0,1,0,-1 };
 
-void dfs(int y, int x) {
-	visited[y][x] = true;
-	tempAns++;
-	for (int i = 0; i < 4; ++i) {
-		int ny = y + dy[i];
-		int nx = x + dx[i];
+int ty, tx;
+int rain = 0;
 
-		if (ny < 0 || nx < 0 || ny >= m || nx >= n)
-			continue;
+string ans = "";
 
-		if (visited[ny][nx])
-			continue;
+bool check(int sy, int sx, int ey, int ex);
 
-		if (table[ny][nx] == 1)
-			continue;
 
-		dfs(ny, nx);
+void divCon(int sy, int sx, int ey, int ex) {
+	
+	if (check(sy, sx, ey, ex)) {
+		ans += char(m[sy][sx]+'0');
+		return;
 	}
+	
+	ans += '(';
+	divCon(sy, sx, (sy + ey) / 2, (sx + ex) / 2);
+	divCon(sy, (sx + ex) / 2, (sy + ey) / 2, ex);
+	divCon((sy + ey) / 2, sx, ey, (sx + ex) / 2);
+	divCon((sy + ey) / 2, (sx + ex) / 2, ey, ex);
+	ans += ')';
+	
 }
-int main() {
+
+bool check(int sy, int sx, int ey, int ex) {
+	if (ey - sy == 1) {
+		return true;
+	}
+
+
+	int start = m[sy][sx];
+	
+	for (int i = sy; i < ey; ++i) {
+		for (int j = sx; j < ex; ++j) {
+			if (m[i][j] != start)
+				return false;
+		}
+	}
+	return true;
+}
+
+
+int main()
+{
 	ios::sync_with_stdio(false);
 	cin.tie(nullptr);
 	cout.tie(nullptr);
-
-	cin >> m >> n >> k;
-
-	vector<int> rect;
-	while (k--) {
-		for (int i = 0; i < 4; ++i) {
-			int input;
-			cin >> input;
-
-			rect.push_back(input);
-		}
-
-		for (int i = rect[1]; i < rect[3]; i++) {
-			for (int j = rect[0]; j < rect[2]; ++j) {
-				table[i][j] = 1;
-			}
-		}
-		rect.clear();
-	}
-
-	vector<int> answer;
-	int t = 0;
-	for (int i = 0; i < m; ++i) {
+	
+	int n;
+	cin >> n;
+	for (int i = 0; i < n; ++i) {
 		for (int j = 0; j < n; ++j) {
-			if (table[i][j] == 1)
-				continue;
-
-			if (visited[i][j])
-				continue;
-
-			dfs(i, j);
-			answer.push_back(tempAns);
-			tempAns = 0;
-			t++;
+			char c;
+			cin >> c;
+			m[i][j] = c - '0';
 		}
 	}
 
-	sort(answer.begin(), answer.end());
-
-
-	cout << t << endl;
-	for (int n : answer) {
-		cout << n << " ";
-	}
-
-
+	divCon(0, 0, n, n);
+	cout << ans;
+	
 }
